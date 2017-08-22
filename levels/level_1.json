@@ -1,0 +1,25 @@
+{
+    "objects":[
+        {"type":"player", "position":[64,416]},
+        {"type":"platform", "position":[0,448], "size": [640, 32]},
+        {"type":"platform", "position":[0,0], "size": [32, 448]},
+        {"type":"platform", "position":[0,0], "size": [608, 32]},
+        {"type":"platform", "position":[608,0], "size": [32, 448]},
+        {"type":"platform", "position":[128,320], "size": [64, 128]},
+        {"type":"platform", "position":[192,128], "size": [64, 224]},
+        {"type":"platform", "position":[32,192], "size": [64, 96]},
+        {"type":"platform", "position":[256,244], "size": [288, 32]},
+        {"type":"platform", "position":[320,96], "size": [16, 32]},
+        {"type":"platform", "position":[448,128], "size": [16, 32]},
+        {"type":"platform", "position":[544,416], "size": [64, 32]},
+        {"type":"platform", "position":[448,352], "size": [16, 32]},
+        {"type":"platform", "position":[320,352], "size": [16, 32]},
+        {"type":"platform", "position":[192,416], "size": [64, 32]},
+        {"type":"damage", "position":[176,128], "size": [16, 192]},
+        {"type":"damage", "position":[32,32], "size": [16, 160]},
+        {"type":"damage", "position":[256,228], "size": [288, 16]},
+        {"type":"damage", "position":[592,32], "size": [16, 384]},
+        {"type":"damage", "position":[256,432], "size": [288, 16]},
+        {"type":"goal", "position":[192,384]}
+    ]
+}
