@@ -1,8 +1,14 @@
 /* global Phaser */
+$.ajaxSetup({
+  cache:false
+});
+
 var level = "levels/"+getParameterByName('level', window.location.href)+".json";
 if(getParameterByName('external', window.location.href) === "") level = getParameterByName('level', window.location.href);
+
 $.getJSON( level, function( room ) {
     var game = new Phaser.Game($(window).width(), $(window).height(), Phaser.AUTO, '', { preload: preload, create: create, update: update });
+    var first = true;
     var bounds_x = 0;
     var bounds_y = 0;
     var player;
@@ -13,6 +19,11 @@ $.getJSON( level, function( room ) {
     var glue;
     var texts;
     var keyboard;
+    var vgc;
+    var left;
+    var right;
+    var jump;
+    
     function preload() {
         game.stage.backgroundColor = '#B0BEC5';
         game.load.baseURL = 'assets/';
@@ -23,6 +34,7 @@ $.getJSON( level, function( room ) {
         game.load.image('goal', 'sprites/goal.png');
         game.load.image('glue', 'sprites/glue.png');
         game.load.image('platform_fall', 'sprites/platform_fall.png');
+        game.load.image('vgc_button', 'sprites/vgc_button.png');
     }
 
     function create() {
@@ -31,6 +43,7 @@ $.getJSON( level, function( room ) {
         damage = game.add.physicsGroup();
         glue = game.add.physicsGroup();
         texts = game.add.group();
+        vgc = game.add.group();
         
         room['objects'].forEach(function(item, index){
             var type = item['type'];
@@ -69,6 +82,50 @@ $.getJSON( level, function( room ) {
         glue.setAll('body.immovable', true);
         game.physics.enable(goal, Phaser.Physics.ARCADE);
         goal.body.immovable = true;
+        
+        if(first){
+            /* Virtual game controller */
+            vgc_left = game.add.button(10, game.height-50, 'vgc_button', null, this);
+            vgc_left.fixedToCamera = true;
+            vgc_left.events.onInputOver.add(function(){left=true;});
+            vgc_left.events.onInputOut.add(function(){left=false;});
+            vgc_left.events.onInputDown.add(function(){left=true;});
+            vgc_left.events.onInputUp.add(function(){left=false;});
+            vgc.add(vgc_left);
+
+            vgc_left_jump = game.add.button(10, game.height-100, 'vgc_button', null, this);
+            vgc_left_jump.fixedToCamera = true;
+            vgc_left_jump.events.onInputOver.add(function(){left=true; jump=true;});
+            vgc_left_jump.events.onInputOut.add(function(){left=false; jump=false;});
+            vgc_left_jump.events.onInputDown.add(function(){left=true; jump=true;});
+            vgc_left_jump.events.onInputUp.add(function(){left=false; jump=false;});
+            vgc.add(vgc_left_jump);
+
+            vgc_jump = game.add.button(60, game.height-100, 'vgc_button', null, this);
+            vgc_jump.fixedToCamera = true;
+            vgc_jump.events.onInputOver.add(function(){jump=true;});
+            vgc_jump.events.onInputOut.add(function(){jump=false;});
+            vgc_jump.events.onInputDown.add(function(){jump=true;});
+            vgc_jump.events.onInputUp.add(function(){jump=false;});
+            vgc.add(vgc_jump);
+
+            vgc_right_jump = game.add.button(110, game.height-100, 'vgc_button', null, this);
+            vgc_right_jump.fixedToCamera = true;
+            vgc_right_jump.events.onInputOver.add(function(){right=true; jump=true;});
+            vgc_right_jump.events.onInputOut.add(function(){right=false; jump=false;});
+            vgc_right_jump.events.onInputDown.add(function(){right=true; jump=true;});
+            vgc_right_jump.events.onInputUp.add(function(){right=false; jump=false;});
+            vgc.add(vgc_right_jump);
+
+            vgc_right = game.add.button(110, game.height-50, 'vgc_button', null, this);
+            vgc_right.fixedToCamera = true;
+            vgc_right.events.onInputOver.add(function(){right=true;});
+            vgc_right.events.onInputOut.add(function(){right=false;});
+            vgc_right.events.onInputDown.add(function(){right=true;});
+            vgc_right.events.onInputUp.add(function(){right=false;});
+            vgc.add(vgc_right);
+        }
+        first = false;
     }
     
     function restart(){
@@ -91,13 +148,14 @@ $.getJSON( level, function( room ) {
 
         player.body.velocity.x = 0;
 
-        if (keyboard['left'].isDown) player.body.velocity.x = -240;
-        else if (keyboard['right'].isDown) player.body.velocity.x = 240;
+        if (keyboard['left'].isDown || left) player.body.velocity.x = -240;
+        else if (keyboard['right'].isDown || right) player.body.velocity.x = 240;
 
-        if (keyboard['up'].isDown && (player.body.onFloor() || player.body.touching.down)){
+        if ((keyboard['up'].isDown || jump) && (player.body.onFloor() || player.body.touching.down))
             player.body.velocity.y = -600;
-        }
-
+        
+        
+        
         if(player.body.velocity.x > 0) player.frame = 1;
         else if (player.body.velocity.x < 0)  player.frame = 2;
         else player.frame = 0;
@@ -111,11 +169,11 @@ $.getJSON( level, function( room ) {
     
     function playerGlue(player, glue){
         player.body.velocity.y = 0;
-        if (keyboard['up'].isDown) player.body.velocity.y = -300;
+        if (keyboard['up'].isDown || jump) player.body.velocity.y = -300;
     }
     
     function playerWin(player, goal){
-        var win_text = game.add.text(game.world.centerX,game.world.centerY,'You won!', { font: '40px Arial', fill: '#2E7D32', align: 'center' });
+        var win_text = game.add.text(game.width/2,game.height/2,'You won!', { font: '40px Arial', fill: '#2E7D32', align: 'center' });
         win_text.anchor.setTo(0.5, 0.5);
         win_text.fixedToCamera = true;
         texts.add(win_text);
