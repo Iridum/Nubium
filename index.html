@@ -5,73 +5,45 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/style.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <style>
-            .jumbotron{
-                background-color: #E1BEE7;
-            }
-            a:hover, a:focus {
-                color: #2196F3;
-                text-decoration: none;
-            }
-            .square-service-block{
-                display: inline-block;
-                margin: 0 10px 10px 10px;
-            }
-            .square-service-block a {
-              background-color: #1E88E5;
-              border-radius: 5px;
-              display: block;
-              width: 100px !important;
-              height: 100px;
-              text-align: center;
-              width: 100%;
-            }
-            .square-service-block a:hover{
-              background-color: #2196F3;
-              border-radius: 5px;
-            }
-
-            h2.ssb-title {
-              color: #fff;
-              font-size: 30px;
-              line-height: 100px;
-              text-transform: uppercase;
-            }
-        </style>
     </head>
 <body>
     <div class="jumbotron text-center">
       <h1>Nubium</h1> 
     </div>
-    <a href="https://github.com/Iridum/Nubium/wiki" class="btn btn-default btn-block btn-lg">Wiki</a>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-div">
+                <ul class="nav navbar-nav navbar-center">
+                    <li>
+                        <a target="_blank" href="https://github.com/Iridum/Nubium">
+                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> Source code
+                        </a>
+                    </li>
+                    <li>
+                        <a target="_blank" href="https://github.com/Iridum/Nubium/issues">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Issues
+                        </a>
+                    </li>
+                    <li>
+                        <a target="_blank" href="https://github.com/Iridum/Nubium/wiki">
+                            <span class="glyphicon glyphicon-book" aria-hidden="true"></span> Wiki
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
     <div class="container">
         <h2>Level selector</h2> 
-        <div class="square-service-block">
-            <a target="_blank" href="game.html?level=level_1">
-                <h2 class="ssb-title">1</h2>  
-            </a>
-        </div>
-        <div class="square-service-block">
-            <a target="_blank" href="game.html?level=level_2">
-                <h2 class="ssb-title">2</h2>  
-            </a>
-        </div>
-        <div class="square-service-block">
-            <a target="_blank" href="game.html?level=level_3">
-                <h2 class="ssb-title">3</h2>  
-            </a>
-        </div>
-        <div class="square-service-block">
-            <a target="_blank" href="game.html?level=level_4">
-                <h2 class="ssb-title">4</h2>  
-            </a>
-        </div>
-        <div class="square-service-block">
-            <a target="_blank" href="game.html?level=level_5">
-                <h2 class="ssb-title">5</h2>  
-            </a>
+        <div class="row">
+            <a target="_blank" href="game.html?level=level_1" class="btn btn-default col-xs-4 col-sm-2"><span>1</span></a>
+            <a target="_blank" href="game.html?level=level_2" class="btn btn-default col-xs-4 col-sm-2"><span>2</span></a>
+            <a target="_blank" href="game.html?level=level_3" class="btn btn-default col-xs-4 col-sm-2"><span>3</span></a>
+            <a target="_blank" href="game.html?level=level_4" class="btn btn-default col-xs-4 col-sm-2"><span>4</span></a>
+            <a target="_blank" href="game.html?level=level_5" class="btn btn-default col-xs-4 col-sm-2"><span>5</span></a>
         </div>
     </div>
 </body>

@@ -1,0 +1,33 @@
+.jumbotron{
+    color: white;
+    background-color: #222;
+    margin-bottom: 0;
+}
+
+.navbar {
+    border: none;
+    border-radius: 0;
+}
+
+.navbar .navbar-nav {
+    display: inline-block;
+    float: none;
+}
+
+.navbar .navbar-div {
+    text-align: center;
+}
+
+.btn > * {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+}
+
+.btn:before{
+    content:'';
+    padding:50% 0; /* vertical value as  100% equals width */
+    display:inline-block;
+}

@@ -1,4 +1,20 @@
+/* 
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /* global Phaser */
+
 $.ajaxSetup({
   cache:false
 });
@@ -23,6 +39,7 @@ $.getJSON( level, function( room ) {
     var left;
     var right;
     var jump;
+    var jump_glue_cd = 0;
     
     function preload() {
         game.stage.backgroundColor = '#B0BEC5';
@@ -34,7 +51,7 @@ $.getJSON( level, function( room ) {
         game.load.image('goal', 'sprites/goal.png');
         game.load.image('glue', 'sprites/glue.png');
         game.load.image('platform_fall', 'sprites/platform_fall.png');
-        game.load.image('vgc_button', 'sprites/vgc_button.png');
+        game.load.image('vgc_button', 'sprites/vgc_button.png?v=1.1');
     }
 
     function create() {
@@ -85,39 +102,23 @@ $.getJSON( level, function( room ) {
         
         if(first){
             /* Virtual game controller */
-            vgc_left = game.add.button(10, game.height-50, 'vgc_button', null, this);
+            vgc_left = game.add.button(0, game.height-64, 'vgc_button', null, this);
             vgc_left.fixedToCamera = true;
             vgc_left.events.onInputOver.add(function(){left=true;});
             vgc_left.events.onInputOut.add(function(){left=false;});
             vgc_left.events.onInputDown.add(function(){left=true;});
             vgc_left.events.onInputUp.add(function(){left=false;});
             vgc.add(vgc_left);
-
-            vgc_left_jump = game.add.button(10, game.height-100, 'vgc_button', null, this);
-            vgc_left_jump.fixedToCamera = true;
-            vgc_left_jump.events.onInputOver.add(function(){left=true; jump=true;});
-            vgc_left_jump.events.onInputOut.add(function(){left=false; jump=false;});
-            vgc_left_jump.events.onInputDown.add(function(){left=true; jump=true;});
-            vgc_left_jump.events.onInputUp.add(function(){left=false; jump=false;});
-            vgc.add(vgc_left_jump);
-
-            vgc_jump = game.add.button(60, game.height-100, 'vgc_button', null, this);
+            
+            vgc_jump = game.add.button(game.width-64, game.height-64, 'vgc_button', null, this);
             vgc_jump.fixedToCamera = true;
             vgc_jump.events.onInputOver.add(function(){jump=true;});
             vgc_jump.events.onInputOut.add(function(){jump=false;});
             vgc_jump.events.onInputDown.add(function(){jump=true;});
             vgc_jump.events.onInputUp.add(function(){jump=false;});
             vgc.add(vgc_jump);
-
-            vgc_right_jump = game.add.button(110, game.height-100, 'vgc_button', null, this);
-            vgc_right_jump.fixedToCamera = true;
-            vgc_right_jump.events.onInputOver.add(function(){right=true; jump=true;});
-            vgc_right_jump.events.onInputOut.add(function(){right=false; jump=false;});
-            vgc_right_jump.events.onInputDown.add(function(){right=true; jump=true;});
-            vgc_right_jump.events.onInputUp.add(function(){right=false; jump=false;});
-            vgc.add(vgc_right_jump);
-
-            vgc_right = game.add.button(110, game.height-50, 'vgc_button', null, this);
+            
+            vgc_right = game.add.button(72, game.height-64, 'vgc_button', null, this);
             vgc_right.fixedToCamera = true;
             vgc_right.events.onInputOver.add(function(){right=true;});
             vgc_right.events.onInputOut.add(function(){right=false;});
@@ -153,14 +154,17 @@ $.getJSON( level, function( room ) {
 
         if ((keyboard['up'].isDown || jump) && (player.body.onFloor() || player.body.touching.down))
             player.body.velocity.y = -600;
-        
-        
+        if ((keyboard['up'].isDown || jump) && jump_glue_cd !== 0){
+            player.body.velocity.y = -300;
+            jump_glue_cd = 0;
+        }
         
         if(player.body.velocity.x > 0) player.frame = 1;
         else if (player.body.velocity.x < 0)  player.frame = 2;
         else player.frame = 0;
         if (player.body.velocity.y < 0) player.frame = 3;
         else if (player.body.velocity.y > 0) player.frame = 4;
+        if(jump_glue_cd !== 0) jump_glue_cd--;
     }
     
     function platformFall(player, platform_fall){
@@ -169,7 +173,7 @@ $.getJSON( level, function( room ) {
     
     function playerGlue(player, glue){
         player.body.velocity.y = 0;
-        if (keyboard['up'].isDown || jump) player.body.velocity.y = -300;
+        jump_glue_cd = 10;
     }
     
     function playerWin(player, goal){
