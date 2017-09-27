@@ -4,7 +4,14 @@
         <title>Nubium</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="msapplication-TileImage" content="launcher-icon.png">
+        <meta name="msapplication-TileColor" content="#2196F3">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="theme-color" content="#2196F3">
+        <link rel="icon" href="launcher-icon.png" sizes="144x144">
+        <link rel="manifest" href="manifest.json">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="css/style.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -32,6 +39,11 @@
                             <span class="glyphicon glyphicon-book" aria-hidden="true"></span> Wiki
                         </a>
                     </li>
+                    <li>
+                        <a target="_blank" href="https://twitter.com/gjzac">
+                            <span class="fa fa-twitter" aria-hidden="true"></span> Twitter
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -39,12 +51,22 @@
     <div class="container">
         <h2>Level selector</h2> 
         <div class="row">
-            <a target="_blank" href="game.html?level=level_1" class="btn btn-default col-xs-4 col-sm-2"><span>1</span></a>
-            <a target="_blank" href="game.html?level=level_2" class="btn btn-default col-xs-4 col-sm-2"><span>2</span></a>
-            <a target="_blank" href="game.html?level=level_3" class="btn btn-default col-xs-4 col-sm-2"><span>3</span></a>
-            <a target="_blank" href="game.html?level=level_4" class="btn btn-default col-xs-4 col-sm-2"><span>4</span></a>
-            <a target="_blank" href="game.html?level=level_5" class="btn btn-default col-xs-4 col-sm-2"><span>5</span></a>
+            <a href="game.html?level=level_1" class="btn btn-default col-xs-4 col-sm-1"><span>1</span></a>
+            <a href="game.html?level=level_2" class="btn btn-default col-xs-4 col-sm-1"><span>2</span></a>
+            <a href="game.html?level=level_3" class="btn btn-default col-xs-4 col-sm-1"><span>3</span></a>
+            <a href="game.html?level=level_4" class="btn btn-default col-xs-4 col-sm-1"><span>4</span></a>
+            <a href="game.html?level=level_5" class="btn btn-default col-xs-4 col-sm-1"><span>5</span></a>
         </div>
     </div>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(function(swr) {
+                console.log('Service Worker Registered');
+            });
+            navigator.serviceWorker.ready.then(function(swr) {
+                console.log('Service Worker Ready');
+            });
+        }
+    </script>
 </body>
 </html>

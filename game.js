@@ -15,10 +15,6 @@
 
 /* global Phaser */
 
-$.ajaxSetup({
-  cache:false
-});
-
 var level = "levels/"+getParameterByName('level', window.location.href)+".json";
 if(getParameterByName('external', window.location.href) === "") level = getParameterByName('level', window.location.href);
 
@@ -42,7 +38,7 @@ $.getJSON( level, function( room ) {
     var jump_glue_cd = 0;
     
     function preload() {
-        game.stage.backgroundColor = '#B0BEC5';
+        game.stage.backgroundColor = '#78909C';
         game.load.baseURL = 'assets/';
         game.load.crossOrigin = 'anonymous';
         game.load.spritesheet('player', 'sprites/player.png', 24, 20, 24);
@@ -51,7 +47,7 @@ $.getJSON( level, function( room ) {
         game.load.image('goal', 'sprites/goal.png');
         game.load.image('glue', 'sprites/glue.png');
         game.load.image('platform_fall', 'sprites/platform_fall.png');
-        game.load.image('vgc_button', 'sprites/vgc_button.png?v=1.1');
+        game.load.image('vgc_button', 'sprites/vgc_button.png?v=1.0');
     }
 
     function create() {
@@ -102,7 +98,8 @@ $.getJSON( level, function( room ) {
         
         if(first){
             /* Virtual game controller */
-            vgc_left = game.add.button(0, game.height-64, 'vgc_button', null, this);
+            vgc_left = game.add.button(0, game.height-68, 'vgc_button', null, this);
+            vgc_left.scale.setTo(1.5, 1);
             vgc_left.fixedToCamera = true;
             vgc_left.events.onInputOver.add(function(){left=true;});
             vgc_left.events.onInputOut.add(function(){left=false;});
@@ -110,7 +107,7 @@ $.getJSON( level, function( room ) {
             vgc_left.events.onInputUp.add(function(){left=false;});
             vgc.add(vgc_left);
             
-            vgc_jump = game.add.button(game.width-64, game.height-64, 'vgc_button', null, this);
+            vgc_jump = game.add.button(game.width-68, game.height-68, 'vgc_button', null, this);
             vgc_jump.fixedToCamera = true;
             vgc_jump.events.onInputOver.add(function(){jump=true;});
             vgc_jump.events.onInputOut.add(function(){jump=false;});
@@ -118,7 +115,8 @@ $.getJSON( level, function( room ) {
             vgc_jump.events.onInputUp.add(function(){jump=false;});
             vgc.add(vgc_jump);
             
-            vgc_right = game.add.button(72, game.height-64, 'vgc_button', null, this);
+            vgc_right = game.add.button(100, game.height-68, 'vgc_button', null, this);
+            vgc_right.scale.setTo(1.5, 1);
             vgc_right.fixedToCamera = true;
             vgc_right.events.onInputOver.add(function(){right=true;});
             vgc_right.events.onInputOut.add(function(){right=false;});
