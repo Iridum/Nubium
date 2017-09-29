@@ -1,24 +1,19 @@
-.jumbotron{
-    color: white;
-    background-color: #222;
-    margin-bottom: 0;
+body {
+    background-color: #CFD8DC;
 }
 
 .navbar {
-    border: none;
-    border-radius: 0;
+    background-color: #2196F3;
 }
 
-.navbar .navbar-nav {
-    display: inline-block;
-    float: none;
+.container.n-card {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: white;
 }
 
-.navbar .navbar-div {
-    text-align: center;
-}
-
-.btn > * {
+.btn-menu > * {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -26,7 +21,7 @@
     font-size: 24px;
 }
 
-.btn:before{
+.btn-menu:before{
     content:'';
     padding:50% 0; /* vertical value as  100% equals width */
     display:inline-block;

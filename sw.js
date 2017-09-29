@@ -1,14 +1,14 @@
 'use strict';
 
-let version = '1.0';
+let version = '1.1';
 
 self.addEventListener('install', e => {
     let timeStamp = Date.now();
     e.waitUntil(
         caches.open('nubium-v'+version).then(cache => {
             return cache.addAll([
-                `index.html?timestamp=${timeStamp}`,
-                `game.html?timestamp=${timeStamp}`
+                'index.html',
+                'game.html'
             ])
             .then(() => self.skipWaiting());
         })

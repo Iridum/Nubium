@@ -15,10 +15,7 @@
 
 /* global Phaser */
 
-var level = "levels/"+getParameterByName('level', window.location.href)+".json";
-if(getParameterByName('external', window.location.href) === "") level = getParameterByName('level', window.location.href);
-
-$.getJSON( level, function( room ) {
+function loadLevel(room){
     var game = new Phaser.Game($(window).width(), $(window).height(), Phaser.AUTO, '', { preload: preload, create: create, update: update });
     var first = true;
     var bounds_x = 0;
@@ -189,7 +186,7 @@ $.getJSON( level, function( room ) {
     $( window ).resize(function() {
         game.scale.setGameSize($(window).width(), $(window).height());
     });
-});
+}
 
 function getParameterByName(name, url) {
     if (!url) url = window.location.href;
@@ -199,4 +196,16 @@ function getParameterByName(name, url) {
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+if(getParameterByName('storage', window.location.href) === ""){
+    try{
+        var level = JSON.parse(localStorage.getItem("nubium_levels"))[getParameterByName('level', window.location.href)];
+        loadLevel(level);
+    }catch(e){
+        alert("Invalid level :(");
+    }
+}else{
+    var level = "levels/"+getParameterByName('level', window.location.href)+".json?v=1.1";
+    $.getJSON( level, loadLevel);
 }
