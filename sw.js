@@ -1,6 +1,6 @@
 'use strict';
 
-let version = '1.3';
+let version = '1.3.1';
 
 self.addEventListener('install', e => {
     let timeStamp = Date.now();
