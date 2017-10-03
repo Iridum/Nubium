@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Advanced JSON Editor Example</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="msapplication-TileImage" content="launcher-icon.png">
+        <meta name="msapplication-TileColor" content="#2196F3">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="theme-color" content="#2196F3">
+        <link rel="icon" href="launcher-icon.png" sizes="144x144">
+        <link rel="manifest" href="manifest.json">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+        <script src="js/jsoneditor.min.js"></script>
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand" href="index.html">
+                <img src="launcher-icon.png" width="30" height="30" class="d-inline-block align-top" alt="">
+                Nubium
+            </a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="https://github.com/Iridum/Nubium">
+                            <i class="fa fa-code" aria-hidden="true"></i> Source code
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="https://github.com/Iridum/Nubium/issues">
+                            <i class="fa fa-bug" aria-hidden="true"></i> Issues
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="https://github.com/Iridum/Nubium/wiki">
+                            <i class="fa fa-book" aria-hidden="true"></i> Wiki
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="https://twitter.com/gjzac">
+                            <i class="fa fa-twitter" aria-hidden="true"></i> Twitter
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container n-card">
+            <div class="row">
+                <div class="col-sm-4">
+                    <button type="button" title="Collapse" class="btn btn-default btn-block" onclick='testLevel();'>Test level</button>
+                </div>
+                <div class="col-sm-4">
+                    <button type="button" title="Collapse" class="btn btn-default btn-block" onclick='saveLevel();'>Save level</button>
+                </div>
+                <div class="col-sm-4">
+                    <button type="button" title="Collapse" class="btn btn-default btn-block" onclick='downloadLevel();'>Export level</button>
+                </div>
+            </div>
+            <hr>
+            <div id='editor_holder'></div>
+        </div>
+    
+        <script>
+            JSONEditor.defaults.theme = 'bootstrap3';
+            JSONEditor.defaults.iconlib = 'fontawesome4';
+            JSONEditor.defaults.editors.object.options.disable_properties = true;
+            
+            var editor = new JSONEditor(document.getElementById('editor_holder'),{
+                ajax: true,
+                    schema: {
+                        type: "object",
+                        title: "Level",
+                        properties: {
+                            name: {
+                                type: "string"
+                            },
+                            objects: {
+                                type: "array",
+                                format: "table",
+                                title: "Objects",
+                                uniqueItems: false,
+                                items: {
+                                    type: "object",
+                                    properties: {
+                                        type: {
+                                            type: "string",
+                                            enum: [
+                                                "player",
+                                                "platform",
+                                                "platform_fall",
+                                                "extrajump",
+                                                "damage",
+                                                "goal"
+                                            ],
+                                            default: "player"
+                                        },
+                                        "position x": { type: "integer" },
+                                        "position y": { type: "integer" },
+                                        "size x": { type: "integer", default: 1 },
+                                        "size y": { type: "integer", default: 1 }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                no_additional_properties: true,
+                required_by_default: true
+            });
+            
+            function testLevel(){
+                var level = new Object();
+                var level_editor_json = editor.getValue();
+                
+                level.name = level_editor_json.name;
+                level.objects = [];
+                level_editor_json.objects.forEach(function(obj){
+                    level.objects.push({
+                        type: obj.type,
+                        position: [obj["position x"], obj["position y"]],
+                        size: [obj["size x"], obj["size y"]]
+                    });
+                });
+                localStorage.setItem("nubium_editor", JSON.stringify(level));
+                window.open("game.html?editor");
+            }
+            
+            function saveLevel(){
+                var level = new Object();
+                var level_editor_json = editor.getValue();
+                
+                level.name = level_editor_json.name;
+                level.objects = [];
+                level_editor_json.objects.forEach(function(obj){
+                    level.objects.push({
+                        type: obj.type,
+                        position: [obj["position x"], obj["position y"]],
+                        size: [obj["size x"], obj["size y"]]
+                    });
+                });
+                if(level.name !== undefined && level.name !== "" && typeof level.name === "string"){
+                    var lslevels = localStorage.getItem("nubium_levels");
+                    var levels = new Object();
+                    if(lslevels !== null && lslevels !== "") levels = JSON.parse(lslevels);
+                    levels[level.name] = level;
+                    localStorage.setItem("nubium_levels", JSON.stringify(levels));
+                    alert("Level "+level.name+" saved!");
+                }else alert("Invalid level: Invalid name.");
+            }
+            function getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+            
+            function downloadLevel() {
+                var level = new Object();
+                var level_editor_json = editor.getValue();
+                
+                level.name = level_editor_json.name;
+                level.objects = [];
+                level_editor_json.objects.forEach(function(obj){
+                    level.objects.push({
+                        type: obj.type,
+                        position: [obj["position x"], obj["position y"]],
+                        size: [obj["size x"], obj["size y"]]
+                    });
+                });
+                
+                var element = document.createElement('a');
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(level)));
+                element.setAttribute('download', level.name + '.json');
+                element.style.display = 'none';
+                document.body.appendChild(element);
+                element.click();
+                document.body.removeChild(element);
+            }
+
+            if(getParameterByName('level', window.location.href) !== null){
+                try{
+                    var level = new Object();
+                    var level_storage = JSON.parse(localStorage.getItem("nubium_levels"))[getParameterByName('level', window.location.href)];
+                    level.name = level_storage.name;
+                    level.objects = [];
+                    level_storage.objects.forEach(function(obj){
+                        level.objects.push({
+                            type: obj.type,
+                            "position x": obj.position[0],
+                            "position y": obj.position[1],
+                            "size x": obj.size[0],
+                            "size y": obj.size[1]
+                        });
+                    });
+                    editor.setValue(level);
+                }catch(e){
+                    alert("Invalid level :(");
+                }
+            }
+            
+
+        </script>
+    </body>
+</html>

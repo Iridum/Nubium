@@ -51,111 +51,135 @@
                 </ul>
             </div>
         </nav>
-    <div class="container n-card">
-        <div class="alert alert-primary" role="alert">
-            We use adverts to keep this game free. You will have to see an advert before enter to a level. This is going to happen twice a day. Thanks for support us. :)
-        </div>
-        <h1 class="display-4">Levels</h1>
-        <div class="row">
-            <a href="game.html?level=level_1" class="btn col-3 col-sm-1 btn-menu"><span>1</span></a>
-            <a href="game.html?level=level_2" class="btn col-3 col-sm-1 btn-menu"><span>2</span></a>
-            <a href="game.html?level=level_3" class="btn col-3 col-sm-1 btn-menu"><span>3</span></a>
-            <a href="game.html?level=level_4" class="btn col-3 col-sm-1 btn-menu"><span>4</span></a>
-            <a href="game.html?level=level_5" class="btn col-3 col-sm-1 btn-menu"><span>5</span></a>
-            <a href="game.html?level=level_6" class="btn col-3 col-sm-1 btn-menu"><span>6</span></a>
-        </div>
-        <h1 class="display-4">Custom levels</h1>
-        <div class="row">
-            <div class="col-sm-6">
-                <h4>Create</h4>
-                <a class="btn btn-info btn-block" onclick="alert('Coming soon! Meanwhile you can create levels using JSON. Check folder \'levels/\' in the source code link.')">Create level</a>
-            </div>
-            <div class="col-sm-6">
-                <h4>Upload</h4>
-                <label class="custom-file" style="width: 100%">
-                    <input type="file"class="custom-file-input" id="level-uploader" onchange="uploadLevel();" multiple>
-                    <span class="custom-file-control"></span>
-                </label>
+        <div id="alert-support" class="alert" role="alert"></div>
+        <div class="container n-card">
+            <h1 class="display-4">Levels</h1>
+            <div class="row">
+                <a href="game.html?level=level_1" class="btn btn-menu col-3 col-sm-1"><span>1</span></a>
+                <a href="game.html?level=level_2" class="btn btn-menu col-3 col-sm-1"><span>2</span></a>
+                <a href="game.html?level=level_3" class="btn btn-menu col-3 col-sm-1"><span>3</span></a>
+                <a href="game.html?level=level_4" class="btn btn-menu col-3 col-sm-1"><span>4</span></a>
+                <a href="game.html?level=level_5" class="btn btn-menu col-3 col-sm-1"><span>5</span></a>
+                <a href="game.html?level=level_6" class="btn btn-menu col-3 col-sm-1"><span>6</span></a>
+                <a href="game.html?level=level_7" class="btn btn-menu col-3 col-sm-1"><span>7</span></a>
+                <a class="btn btn-menu disabled col-3 col-sm-1"><span>8</span></a>
+                <a class="btn btn-menu disabled col-3 col-sm-1"><span>9</span></a>
+                <a class="btn btn-menu disabled col-3 col-sm-1"><span>10</span></a>
+                <a class="btn btn-menu disabled col-3 col-sm-1"><span>11</span></a>
+                <a class="btn btn-menu disabled col-3 col-sm-1"><span>12</span></a>
             </div>
         </div>
-        <h4 class="mt-4">Play</h4>
-        <div id="custom-levels" class="row"></div>
-    </div>
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').then(function(swr) {
-                console.log('Service Worker Registered');
-            });
-            navigator.serviceWorker.ready.then(function(swr) {
-                console.log('Service Worker Ready');
-            });
-        }
-        
-        function loadLevels() {
-            try{
-                var lslevels = localStorage.getItem("nubium_levels");
-                var levels = new Object();
-                if(lslevels !== null && lslevels !== "") levels = JSON.parse(lslevels);
-                else return $("#custom-levels").append('<div class="col-12"><div class="alert alert-warning" role="alert">You do not have levels saved.</div></div>');
-                Object.keys(levels).forEach(function(level_id){
-                    $("#custom-levels").append('<a href="game.html?storage&level='+level_id+'" class="btn col-6 btn-block"><span>'+level_id+'</span></a>');
+        <div class="container n-card">
+            <h1 class="display-4">Custom levels</h1>
+            <div class="row">
+                <div class="col-sm-6">
+                    <h4>Create</h4>
+                    <a class="btn btn-primary btn-block" href='editor.html'>Create level</a>
+                </div>
+                <div class="col-sm-6">
+                    <h4>Upload</h4>
+                    <label class="custom-file" style="width: 100%">
+                        <input type="file" class="custom-file-input" id="level-uploader" onchange="uploadLevel();" accept=".json" multiple>
+                        <span class="custom-file-control"></span>
+                    </label>
+                </div>
+            </div>
+            <h4 class="mt-4">Play</h4>
+            <div id="custom-levels" class="row"></div>
+        </div>
+        <script>
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').then(function(swr) {
+                    console.log('Service Worker Registered');
                 });
-            }catch(e){
-                alert("Error loading custom levels.");
+                navigator.serviceWorker.ready.then(function(swr) {
+                    console.log('Service Worker Ready');
+                });
             }
-        }
-        
-        function uploadLevel() {
-            var oFiles = document.getElementById("level-uploader").files,
-                nFiles = oFiles.length;
-            var reader = new FileReader();
-            reader.onload = function(){
+
+            function loadLevels() {
                 try{
-                    var level = JSON.parse(reader.result);
-                    if(level.name !== undefined && level.name !== "" && typeof level.name === "string"){
-                        var lslevels = localStorage.getItem("nubium_levels");
-                        var levels = new Object();
-                        if(lslevels !== null && lslevels !== "") levels = JSON.parse(lslevels);
-                        levels[level.name] = level;
-                        localStorage.setItem("nubium_levels", JSON.stringify(levels));
-                        alert("Level "+level.name+" added!\nReload the app to load it.");
-                    }else alert("Invalid file: Invalid name.");
+                    $("#custom-levels").html('');
+                    var lslevels = localStorage.getItem("nubium_levels");
+                    var levels = new Object();
+                    if(lslevels !== null && lslevels !== "" && lslevels !== "{}") levels = JSON.parse(lslevels);
+                    else return $("#custom-levels").append('<div class="col-12"><div class="alert alert-warning" role="alert">You do not have levels saved.</div></div>');
+                    Object.keys(levels).forEach(function(level_id){
+                        $("#custom-levels").append('<a href="game.html?storage&level='+level_id+'" class="btn col-10 btn-block"><span>'+level_id+'</span></a>');
+                        $("#custom-levels").append('<a href="editor.html?level='+level_id+'" class="btn col-1 btn-block"><span><i class="fa fa-pencil" aria-hidden="true"></i></span></a>');
+                        $("#custom-levels").append('<a href="#" onclick="removeLevel(\''+level_id+'\')" class="btn col-1 btn-block"><span><i class="fa fa-times" aria-hidden="true"></i></span></a>');
+                    });
                 }catch(e){
-                    alert("Invalid file: Invalid JSON.");
+                    alert("Error loading custom levels.");
                 }
-            };
-            for (var nFileId = 0; nFileId < nFiles; nFileId++)
-                reader.readAsText(oFiles[nFileId]);
-        }
-        
-        loadLevels();
-    </script>
-    <script type="text/javascript">//<![CDATA[ 
-        (function() {
-            var configuration = {
-            "token": "3b2c95e91b3b15931017ec8fc842461f",
-            "excludeDomains": [
-                "twitter.com",
-                "github.com"
-            ],
-            "capping": {
-                "limit": 2,
-                "timeout": 24
-            },
-            "exitScript": {
-                "enabled": true
-            },
-            "popUnder": {
-                "enabled": true
             }
-        };
-            var script = document.createElement('script');
-            script.async = true;
-            script.src = '//cdn.shorte.st/link-converter.min.js';
-            script.onload = script.onreadystatechange = function () {var rs = this.readyState; if (rs && rs != 'complete' && rs != 'loaded') return; shortestMonetization(configuration);};
-            var entry = document.getElementsByTagName('script')[0];
-            entry.parentNode.insertBefore(script, entry);
-        })();
-//]]></script>
-</body>
+
+            function uploadLevel() {
+                var oFiles = document.getElementById("level-uploader").files,
+                    nFiles = oFiles.length;
+                var reader = new FileReader();
+                reader.onload = function(){
+                    try{
+                        var level = JSON.parse(reader.result);
+                        if(level.name !== undefined && level.name !== "" && typeof level.name === "string"){
+                            var lslevels = localStorage.getItem("nubium_levels");
+                            var levels = new Object();
+                            if(lslevels !== null && lslevels !== "") levels = JSON.parse(lslevels);
+                            levels[level.name] = level;
+                            localStorage.setItem("nubium_levels", JSON.stringify(levels));
+                            loadLevels();
+                        }else alert("Invalid file: Invalid name.");
+                    }catch(e){
+                        alert("Invalid file: Invalid JSON.");
+                    }
+                };
+                for (var nFileId = 0; nFileId < nFiles; nFileId++)
+                    reader.readAsText(oFiles[nFileId]);
+            }
+            
+            function removeLevel(rlevel_id) {
+                var lslevels = JSON.parse(localStorage.getItem("nubium_levels"));
+                delete lslevels[rlevel_id];
+                localStorage.setItem("nubium_levels", JSON.stringify(lslevels));
+                loadLevels();
+            }
+            loadLevels();
+        </script>
+        <script src="ads.js" type="text/javascript"></script>
+        <script type="text/javascript">
+
+        if(document.getElementById('tbKrlkevdgIN'))
+            $("#alert-support").addClass("alert-primary").html("We use adverts to keep this game free. You will have to see an advert before enter to a level only twice a day. Thanks for support us.");
+        else
+            $("#alert-support").addClass("alert-danger").html("We use adverts to keep this game free. Please consider supporting us by disabling your ad blocker.");
+
+        </script>
+        <script type="text/javascript">//<![CDATA[ 
+            (function() {
+                var configuration = {
+                    "token": "3b2c95e91b3b15931017ec8fc842461f",
+                    "excludeDomains": [
+                        "twitter.com",
+                        "github.com"
+                    ],
+                    "capping": {
+                        "limit": 2,
+                        "timeout": 24
+                    },
+                    "exitScript": {
+                        "enabled": true
+                    },
+                    "popUnder": {
+                        "enabled": true
+                    }
+                };
+                var script = document.createElement('script');
+                script.async = true;
+                script.src = '//cdn.shorte.st/link-converter.min.js';
+                script.onload = script.onreadystatechange = function () {var rs = this.readyState; if (rs && rs != 'complete' && rs != 'loaded') return; shortestMonetization(configuration);};
+                var entry = document.getElementsByTagName('script')[0];
+                entry.parentNode.insertBefore(script, entry);
+            })();
+    //]]></script>
+    </body>
 </html>

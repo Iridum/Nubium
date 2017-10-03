@@ -26,12 +26,14 @@ function loadLevel(room){
     var platforms_fall;
     var damage;
     var glue;
+    var extrajump;
     var texts;
     var keyboard;
     var vgc;
     var left;
     var right;
     var jump;
+    var jump_boost = false;
     var jump_glue_cd = 0;
     
     function preload() {
@@ -43,6 +45,7 @@ function loadLevel(room){
         game.load.image('damage', 'sprites/damage.png');
         game.load.image('goal', 'sprites/goal.png');
         game.load.image('glue', 'sprites/glue.png');
+        game.load.image('extrajump', 'sprites/extrajump.png');
         game.load.image('platform_fall', 'sprites/platform_fall.png');
         game.load.image('vgc_button', 'sprites/vgc_button.png?v=1.0');
     }
@@ -52,6 +55,7 @@ function loadLevel(room){
         platforms_fall = game.add.physicsGroup();
         damage = game.add.physicsGroup();
         glue = game.add.physicsGroup();
+        extrajump = game.add.physicsGroup();
         texts = game.add.group();
         vgc = game.add.group();
         
@@ -72,11 +76,13 @@ function loadLevel(room){
                 case 'platform': platforms.add(sprite); break;
                 case 'platform_fall': platforms_fall.add(sprite); break;
                 case 'glue': glue.add(sprite); break;
+                case 'extrajump': extrajump.add(sprite); break;
                 case 'damage': damage.add(sprite); break;
                 case 'goal': goal = sprite;
             }
         });
-
+        if(bounds_x < $(window).width()) bounds_x = $(window).width();
+        if(bounds_y < $(window).height()) bounds_y = $(window).height();
         game.world.setBounds(0, 0, bounds_x, bounds_y);
         game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON);
         game.physics.arcade.enable(player);
@@ -90,6 +96,7 @@ function loadLevel(room){
         platforms_fall.setAll('body.immovable', true);
         damage.setAll('body.immovable', true);
         glue.setAll('body.immovable', true);
+        extrajump.setAll('body.immovable', true);
         game.physics.enable(goal, Phaser.Physics.ARCADE);
         goal.body.immovable = true;
         
@@ -130,6 +137,7 @@ function loadLevel(room){
         platforms.removeAll();
         platforms_fall.removeAll();
         damage.removeAll();
+        extrajump.removeAll();
         glue.removeAll();
         texts.removeAll();
         create();
@@ -139,6 +147,7 @@ function loadLevel(room){
         game.physics.arcade.collide(player, platforms);
         game.physics.arcade.collide(player, platforms_fall, platformFall);
         game.physics.arcade.collide(player, glue, playerGlue);
+        game.physics.arcade.collide(player, extrajump, enableExtraJump);
         game.physics.arcade.collide(player, goal, playerWin);
         game.physics.arcade.collide(player, damage, playerDeath);
 
@@ -147,8 +156,11 @@ function loadLevel(room){
         if (keyboard['left'].isDown || left) player.body.velocity.x = -240;
         else if (keyboard['right'].isDown || right) player.body.velocity.x = 240;
 
+        
         if ((keyboard['up'].isDown || jump) && (player.body.onFloor() || player.body.touching.down))
-            player.body.velocity.y = -600;
+            if(jump_boost) player.body.velocity.y = -700;
+            else player.body.velocity.y = -600;
+        
         if ((keyboard['up'].isDown || jump) && jump_glue_cd !== 0){
             player.body.velocity.y = -300;
             jump_glue_cd = 0;
@@ -160,6 +172,7 @@ function loadLevel(room){
         if (player.body.velocity.y < 0) player.frame = 3;
         else if (player.body.velocity.y > 0) player.frame = 4;
         if(jump_glue_cd !== 0) jump_glue_cd--;
+        jump_boost = false;
     }
     
     function platformFall(player, platform_fall){
@@ -169,6 +182,10 @@ function loadLevel(room){
     function playerGlue(player, glue){
         player.body.velocity.y = 0;
         jump_glue_cd = 10;
+    }
+    
+    function enableExtraJump(){
+        jump_boost = true;
     }
     
     function playerWin(player, goal){
@@ -204,6 +221,14 @@ if(getParameterByName('storage', window.location.href) === ""){
         loadLevel(level);
     }catch(e){
         alert("Invalid level :(");
+    }
+}else if(getParameterByName('editor', window.location.href) === ""){
+    try{
+        var level = JSON.parse(localStorage.getItem("nubium_editor"));
+        loadLevel(level);
+        $('#main-menu').remove();
+    }catch(e){
+        alert("Invalid level.");
     }
 }else{
     var level = "levels/"+getParameterByName('level', window.location.href)+".json?v=1.1";

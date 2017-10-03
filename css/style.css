@@ -13,6 +13,10 @@ body {
     background-color: white;
 }
 
+.btn-primary {
+    color: white !important;
+}
+
 .btn-menu > * {
     position: absolute;
     left: 50%;
