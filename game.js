@@ -64,6 +64,11 @@ function loadLevel(room){
             var position = item['position'];
             var size = item['size'];
             var depth = item['depth'];
+            if(type === "text"){
+                var text = game.add.text(position[0], position[1],item.text, { font: '16px Arial', fill: '#FFF', align: 'center' });
+                texts.add(text);
+                return;
+            }
             if(size === undefined) size = [0, 0];
             if(depth === undefined) depth = 0;
             var sprite = game.add.sprite(position[0], position[1], type);
@@ -78,7 +83,7 @@ function loadLevel(room){
                 case 'glue': glue.add(sprite); break;
                 case 'extrajump': extrajump.add(sprite); break;
                 case 'damage': damage.add(sprite); break;
-                case 'goal': goal = sprite;
+                case 'goal': goal = sprite; break;
             }
         });
         if(bounds_x < $(window).width()) bounds_x = $(window).width();
@@ -193,6 +198,15 @@ function loadLevel(room){
         win_text.anchor.setTo(0.5, 0.5);
         win_text.fixedToCamera = true;
         texts.add(win_text);
+        if(getParameterByName('storage', window.location.href) === ""){
+            try{
+                var levels = JSON.parse(localStorage.getItem("nubium_levels"));
+                levels[getParameterByName('level', window.location.href)].completed = true;
+                localStorage.setItem("nubium_levels", JSON.stringify(levels));
+            }catch(e){
+                alert("Uknown error :(");
+            }
+        }
         goal.kill();
     }
     
@@ -230,7 +244,4 @@ if(getParameterByName('storage', window.location.href) === ""){
     }catch(e){
         alert("Invalid level.");
     }
-}else{
-    var level = "levels/"+getParameterByName('level', window.location.href)+".json?v=1.1";
-    $.getJSON( level, loadLevel);
 }

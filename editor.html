@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <title>Advanced JSON Editor Example</title>
+        <title>Nubium editor</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="msapplication-TileImage" content="launcher-icon.png">
         <meta name="msapplication-TileColor" content="#2196F3">
@@ -19,7 +19,7 @@
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light">
+        <nav class="navbar navbar-dark bg-primary navbar-expand-lg">
             <a class="navbar-brand" href="index.html">
                 <img src="launcher-icon.png" width="30" height="30" class="d-inline-block align-top" alt="">
                 Nubium
@@ -198,17 +198,16 @@
                             type: obj.type,
                             "position x": obj.position[0],
                             "position y": obj.position[1],
-                            "size x": obj.size[0],
-                            "size y": obj.size[1]
+                            "size x": obj.size === undefined ? 1 : obj.size[0],
+                            "size y": obj.size === undefined ? 1 : obj.size[1]
                         });
                     });
                     editor.setValue(level);
                 }catch(e){
                     alert("Invalid level :(");
+                    console.log(e);
                 }
             }
-            
-
         </script>
     </body>
 </html>
